@@ -5,4 +5,6 @@ package com.ytakahashi;
 
 interface IMyAidlInterface {
     String getMessage(String name);
+    String getJankenResult(int player_hands, int cpu_hands);
+    int getCpuHands();
 }

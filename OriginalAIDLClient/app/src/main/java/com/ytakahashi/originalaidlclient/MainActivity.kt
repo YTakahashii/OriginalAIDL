@@ -15,6 +15,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var svc: IMyAidlInterface? = null
+    enum class Hand(val value: Int) {
+        ROCK(0), SCISSOR(1), PAPER(2),
+    }
+    private val hands = arrayOf("✊", "✌️", "✋")
 
     private val connection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -41,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         button.setOnClickListener {
             try {
                 val message = svc?.getMessage("yuta")
@@ -50,11 +55,36 @@ class MainActivity : AppCompatActivity() {
                 Log.d("client", e.toString())
             }
         }
+
+        button_rock.setOnClickListener {
+            janken(Hand.ROCK);
+        }
+
+        button_scissor.setOnClickListener {
+            janken(Hand.SCISSOR);
+        }
+
+        button_paper.setOnClickListener {
+            janken(Hand.PAPER);
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unbindService(connection)
+    }
+
+    private fun janken(hand: Hand) {
+        try {
+            val cpuHands = svc?.getCpuHands()!!
+            val result = svc?.getJankenResult(hand.value, cpuHands)
+            textView_cpu_hands.text = hands[cpuHands]
+            textView_result.text = result
+
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+            Log.d("client", e.toString())
+        }
     }
 
 }
