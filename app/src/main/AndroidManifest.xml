@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.ytakahashi.originalaidlservice.OriginalService" android:process=":remote">
+            <intent-filter>
+                <action android:name="originalservice"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
